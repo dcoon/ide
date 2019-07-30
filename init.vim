@@ -1,17 +1,34 @@
-"  Vimjunegunn/vim-easy-align settings, rather then Vi settings (much better!).
+" Maintained by David Coon <david@davidcoon.org>
 "
-" This must be first, beca it changes other options as a side effect.
+"
+"
+"
+" Sections:
+"       General
+"       Syntax & Colors
+"
+"
+
+"
+" General
+"
+"
+
+" This must be first, because it changes other options as a side effect.
 set nocompatible
-"set termguicolors
 
 " os x backspace fix
 set backspace=indent,eol,start
 
 set modelines=0   " dont need modelines and the potential security hazard
 
-" Enable syntax highlighting.
-syntax on
-"set laststatus=2
+
+syntax on                   " Enable syntax highlighting.
+" set termguicolors
+try
+    colorscheme one
+catch
+endtry
 
 " Enable syntax highlighting
 filetype on
@@ -33,7 +50,7 @@ set copyindent
 set ruler
 
 " Line numbers on
-set nu
+set number
 
 " dont use backup files
 set nobackup
@@ -41,6 +58,7 @@ set noswapfile
 
 " Auto read when a file is changed on disk
 set autoread
+set clipboard=unnamed           " normal OS clipboard interaction
 
 " Turn on spell check for certain filetypes automatically
 autocmd BufRead,BufNewFile *.md setlocal spell spelllang=en_us
@@ -56,24 +74,33 @@ set shiftwidth=4
 set tabstop=4
 set expandtab
 set smarttab
+set softtabstop=4               " when hitting <BS>, pretend like a tab is removed, even if spaces
+set shiftround                  " use multiple of shiftwidth when indenting with '<' and '>'
+
 
 
 "
-"indent
+" Code folding
+"
+set foldenable                  " enable folding
 set foldmethod=syntax
 set foldlevelstart=3
-
-" Code folding
-let g:_syntax_folding=1
-au FileType  setlocal foldmethod=syntax
-
+" set foldcolumn=1                " add a fold column
+set foldopen=block,hor,insert,jump,mark,percent,quickfix,search,tag,undo
+                                " which commands trigger auto-unfold
 " Minimal number of screen lines to keep above and below the cursor.
 set scrolloff=2
 
 set shortmess=atl
 
 "  UTF-8.
-" set encoding=utf-8
+set termencoding=utf-8
+set encoding=utf-8
+set lazyredraw                  " don't update the display while executing macros
+"set laststatus=2                " tell VIM to always put a status line in, even
+                                "    if there is only one window
+set cmdheight=2                 " use a status bar that is 2 rows high
+
 
 " Search as you type.
 set incsearch
@@ -94,11 +121,23 @@ set showmode
 set visualbell
 set noerrorbells  " don't beep
 
+set mouse=a                     " enable using the mouse if terminal emulator
+
 " Allow switching dirty buffers
 set hidden
+set switchbuf=useopen           " reveal already opened files from the
+                                " quickfix window instead of opening new
+                                " buffers
 
 " Automatically change the working dir
 set autochdir
+
+"
+" Key mappings
+"
+
+nnoremap ; :
+nnoremap <leader>; ;
 
 " Close current buffer
 " noremap <c-k> :bd <CR><CR>
@@ -109,37 +148,19 @@ set autochdir
 " Ctrl-S to save
 " noremap <c-s> :w <CR><CR>
 
-" Write this in your vimrc file
-"let g:ale_lint_on_text_changed = 'never'
-" You can disable this option too
-
-" if you don't want linters to run on opening a file
-"let g:ale_lint_on_enter = 0
-
-" Write this in your vimrc file
-let g:ale_set_loclist = 0
-let g:ale_set_quickfix = 1
-
-"let g:ale_linters_explicit = 1
-
-"let g:ale_fixers = { 'javascript': ['prettier'] }
-
-"let g:ale_javascript_prettier_options = '--single-quote --trailing-comma es5'
-
-
-
-"autocmd FileType javascript set formatprg=prettier\ --stdin<Paste>
-
-"set statusline+=%{gutentags#statusline()}
-
 
 call plug#begin('~/.config/nvim/plugged')
 
 " Make sure you use single quotes
 
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
-"Plug 'w0rp/ale'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'ryanolsonx/vim-lsp-javascript'
+Plug 'ekalinin/Dockerfile.vim'
+Plug 'rakr/vim-one'
 
 call plug#end()
