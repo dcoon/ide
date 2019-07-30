@@ -13,16 +13,12 @@ RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y && apt-get cle
 # install unix utilities
 RUN apt-get install -y sudo git curl tmux neovim
 
-ENV NVM_DIR="/usr/local/nvm"
-
 # install nvm and node
+ENV NVM_DIR="/usr/local/nvm"
 RUN mkdir -p $NVM_DIR \
     && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash \
-    && . $NVM_DIR/nvm.sh \
-    && nvm install node
-
-# install lsp server(s)
-RUN . $NVM_DIR/nvm.sh \
+    && . $NVM_DIR/nvm.sh  \
+    && nvm install node \
     && nvm use node \
     && npm install -g typescript typescript-language-server
 
@@ -31,12 +27,19 @@ RUN useradd --groups adm,sudo -m -s /bin/bash dev
 
 # switch to developer user
 USER dev
+WORKDIR /home/dev
+
+# source nvm so it's available to vim
+RUN echo ". $NVM_DIR/nvm.sh" >> ./.bashrc
 
 # overlay vim config
-RUN mkdir -p /home/dev/.config && cd /home/dev/.config && git clone "https://github.com/dcoon/vim.git" && mv /home/dev/.config/vim /home/dev/.config/nvim
+ENV CONFIG_DIR=./.config
+RUN mkdir -p $CONFIG_DIR \
+    && cd $CONFIG_DIR && git clone "https://github.com/dcoon/vim.git" \
+    && mv vim nvim
 
 # install plugged
-RUN curl -fLo /home/dev/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+RUN curl -fLo $CONFIG_DIR/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 # install vim plugins
 RUN nvim --headless +PlugInstall +qa
