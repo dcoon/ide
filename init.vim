@@ -161,7 +161,7 @@ Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'ryanolsonx/vim-lsp-javascript'
 Plug 'ekalinin/Dockerfile.vim'
-"Plug 'rakr/vim-one'
+Plug 'rakr/vim-one'
 Plug 'NLKNguyen/papercolor-theme'
 
 call plug#end()
