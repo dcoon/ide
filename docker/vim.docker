@@ -1,10 +1,10 @@
 # vim.docker
 #
-# Docker image for my neovim development environment
+# Docker image for my neovim dcoonelopment environment
 #
 # VERSION               0.0.1
 
-FROM      debian:buster-slim
+FROM      debian:unstable-slim
 MAINTAINER David Coon "dcoon@davidcoon.org"
 
 # make sure the package repository is up to date
@@ -23,11 +23,11 @@ RUN mkdir -p $NVM_DIR \
     && npm install -g typescript typescript-language-server
 
 # create a user for myself
-RUN useradd --groups adm,sudo -m -s /bin/bash dev
+RUN useradd --groups adm,sudo -m -s /bin/bash dcoon
 
-# switch to developer user
-USER dev
-WORKDIR /home/dev
+# switch to developer  user
+USER dcoon
+WORKDIR /home/dcoon
 
 # source nvm so it's available to vim
 RUN echo ". $NVM_DIR/nvm.sh" >> ./.bashrc
@@ -44,5 +44,5 @@ RUN curl -fLo $CONFIG_DIR/nvim/autoload/plug.vim --create-dirs https://raw.githu
 # install vim plugins
 RUN nvim --headless +PlugInstall +qa
 
-CMD ["vim"]
+CMD ["/bin/bash"]
 
