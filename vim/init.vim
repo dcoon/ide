@@ -1,185 +1,108 @@
+
 " Maintained by David Coon <david@davidcoon.org>
 "
 "
 "
-"
-" Sections:
-"       General
-"       Syntax & Colors
-"
-"
-
-"
-" General
-"
-"
-
-" This must be first, because it changes other options as a side effect.
 set nocompatible
 
-" os x backspace fix
+"more characters will be sent to the screen for redrawing
+set ttyfast
+set ttimeout
+set ttimeoutlen=50
+
+" Make backspace behave in a sane manner.
 set backspace=indent,eol,start
 
-set modelines=0   " dont need modelines and the potential security hazard
+" dont need modelines and the potential security hazard
+set modelines=0
 
+" enable using the mouse if terminal emulator
+set mouse=a
 
-syntax on                   " Enable syntax highlighting.
-" set termguicolors
-try
-    colorscheme one
-catch
-endtry
-
-" Enable syntax highlighting
-filetype on
-
-" Enable filetype detection
-filetype indent on    " Enable filetype-specific indenting
-filetype plugin on    " Enable filetype-specific plugins
-
-
-" show trailing whitespace chars
-set list
-set listchars=tab:>-,trail:.,extends:#,nbsp:.
-
-" Automatically indent when adding a curly bracket, etc.
-set smartindent
-set copyindent
-
-" Ruler on
-set ruler
-
-" Line numbers on
-set number
-
+"
+" Files & Buffers
+"
 " dont use backup files
 set nobackup
 set noswapfile
 
 " Auto read when a file is changed on disk
 set autoread
-set clipboard=unnamed           " normal OS clipboard interaction
+
+" Enable file type detection and do language-dependent indenting.
+filetype plugin indent on
+
+" Allow hidden buffers, don't limit to 1 file per window/split
+set hidden
+
+" reveal already opened files from the quickfix window instead of opening new buffers
+set switchbuf=useopen
 
 " Turn on spell check for certain filetypes automatically
-autocmd BufRead,BufNewFile *.md setlocal spell spelllang=en_us
-" autocmd BufRead,BufNewFile *.txt setlocal spell spelllang=en_us
+autocmd FileType *.md setlocal spell spelllang=en_us
 autocmd FileType gitcommit setlocal spell spelllang=en_us
 
-
-" Tabs should be converted to a group of 4 spaces.
-" This is the official Python convention
-" http://www.python.org/dev/peps/pep-0008/
-" I didn't find a good reason to not  it everywhere.
-set shiftwidth=4
-set tabstop=4
-set expandtab
-set smarttab
-set softtabstop=4               " when hitting <BS>, pretend like a tab is removed, even if spaces
-set shiftround                  " use multiple of shiftwidth when indenting with '<' and '>'
-
-
-
 "
-" Code folding
+" Appearance
 "
-set foldenable                  " enable folding
-set foldmethod=syntax
-set foldlevelstart=3
-" set foldcolumn=1                " add a fold column
-set foldopen=block,hor,insert,jump,mark,percent,quickfix,search,tag,undo
-                                " which commands trigger auto-unfold
-" Minimal number of screen lines to keep above and below the cursor.
-set scrolloff=2
-
-set shortmess=atl
-
-"  UTF-8.
-set termencoding=utf-8
-set encoding=utf-8
-set lazyredraw                  " don't update the display while executing macros
-"set laststatus=2                " tell VIM to always put a status line in, even
-                                "    if there is only one window
-set cmdheight=2                 " use a status bar that is 2 rows high
+" normal OS clipboard interaction
+set clipboard=unnamed
 
 
-" Search as you type.
+" Switch syntax highlighting on
+syntax on
+
+" Show line numbers
+set number
+
+" Always split in a predictable way
+set splitbelow
+set splitright
+
+" show trailing whitespace chars
+set list
+"	this is a tab and a trailing space...
+set listchars=tab:>.,trail:.,extends:#,nbsp:.
+
+" Automatically indent when adding a curly bracket, etc.
+set smartindent
+set copyindent
+
+"incremental search
 set incsearch
-set hlsearch
 
-" Ignore case when searching.
+"highlight search
+set hlsearch
+"searches are case insensitive unless they contain at least one capital letter
 set ignorecase
 set smartcase
 
-" Show autocomplete menus.
+"display incomplete commands
+set showcmd
+
+"a better menu in command mode
 set wildmenu
-set wildmode=full
+set wildmode=longest:full
 
-" Show editing mode
-set showmode
+" enable folding
+set foldenable
+set foldmethod=syntax
+set foldcolumn=1
+" which commands trigger auto-unfold
+"set foldopen=block,hor,insert,jump,mark,percent,quickfix,search,tag,undo
 
-" Error bells are displayed visually.
-set visualbell
-set noerrorbells  " don't beep
+" when hitting <BS>, pretend like a tab is removed, even if spaces
+set tabstop=4
+set softtabstop=4               
+set smarttab
+set shiftwidth=4
+"set expandtab
+" use multiple of shiftwidth when indenting with '<' and '>'
+set shiftround                  
 
-set mouse=a                     " enable using the mouse if terminal emulator
-
-" Allow switching dirty buffers
-set hidden
-set switchbuf=useopen           " reveal already opened files from the
-                                " quickfix window instead of opening new
-                                " buffers
-
-" Automatically change the working dir
-set autochdir
-
+"shortcuts for quickfix window
+"nmap <silent> <C-N> :cn<CR>zv
+"nmap <silent> <C-P> :cp<CR>zv
 "
-" Key mappings
 "
-
-nnoremap ; :
-nnoremap <leader>; ;
-
-" Close current buffer
-" noremap <c-k> :bd <CR><CR>
-
-" Switch to next buffer
-" noremap <c-b> :bn <CR><CR>
-
-" Ctrl-S to save
-" noremap <c-s> :w <CR><CR>
-
-
-call plug#begin('~/.config/nvim/plugged')
-
-" Make sure you use single quotes
-
-" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive'
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'ryanolsonx/vim-lsp-javascript'
-Plug 'ekalinin/Dockerfile.vim'
-Plug 'rakr/vim-one'
-Plug 'NLKNguyen/papercolor-theme'
-Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
-  \ 'branch': 'release/1.x',
-  \ 'for': [
-    \ 'javascript',
-    \ 'typescript',
-    \ 'css',
-    \ 'less',
-    \ 'scss',
-    \ 'json',
-    \ 'graphql',
-    \ 'markdown',
-    \ 'vue',
-    \ 'lua',
-    \ 'php',
-    \ 'python',
-    \ 'ruby',
-    \ 'html',
-    \ 'swift' ] }
-call plug#end()
+"
